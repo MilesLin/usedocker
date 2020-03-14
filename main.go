@@ -3,13 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/docker/go-connections/nat"
-	"io"
-	"os"
-
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/docker/go-connections/nat"
+	"io"
+	"os"
 )
 
 func main() {
@@ -18,8 +17,38 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	// todo: flags, SSL
+	// RestartPolicy
+	//   Empty string means not to restart
+	//   always Always restart
+	//   unless-stopped Restart always except when the user has manually stopped the container
+	//   on-failure Restart only when the container exit code is non-zero
+	// Authorization, port mapping, container name, imageName
 
+	// todo: enable SSL
+
+	// todo: api port
 	imageName := "mileslin/dockerlab"
+
+	// remove image
+	images, err := cli.ImageList(ctx, types.ImageListOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	for _, image := range images {
+		fmt.Println(image)
+		for s, s2 := range image.Labels {
+			fmt.Println(s)
+			fmt.Println(s2)
+		}
+		fmt.Println(image.RepoDigests)
+		fmt.Println(image.RepoTags)
+		break
+	}
+	//cli.ImageRemove(ctx, )
+
+	// pull image
 	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
 	if err != nil {
 		panic(err)
