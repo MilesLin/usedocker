@@ -80,29 +80,29 @@ func PullImage(imageName string) (string, error) {
 	return newStr, nil
 }
 
-func StopContainer(containerName string) {
+func StopContainer(containerName string) (string, error) {
 
 	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
 
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
 	var isFound = false
 	for _, container := range containers {
 		for _, name := range container.Names {
 			if name == containerName {
 				isFound = true
-				fmt.Print("Stopping container ", container.ID[:10], "... ")
 				if err := cli.ContainerStop(ctx, container.ID, nil); err != nil {
-					fmt.Println(err)
+					return "", err
 				}
 			}
 		}
 	}
+
 	if isFound {
-		fmt.Println("Stop Container Success")
+		return "Stop Container Success", nil
 	} else {
-		fmt.Println("Container not found")
+		return "", errors.New("container not found")
 	}
 
 }
