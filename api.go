@@ -21,7 +21,7 @@ type ContainerConfig struct {
 	ContainerName string `form:"containerName" json:"containerName" binding:"required"`
 	ExportPort    int    `form:"exportPort" json:"exportPort" binding:"required"`
 	HostPort      int    `form:"hostPort" json:"hostPort" binding:"required"`
-	HostIP        int    `form:"hostIP" json:"hostIP" binding:"required"`
+	HostIP        string `form:"hostIP" json:"hostIP" binding:"required"`
 }
 
 func RemoveImageApi(c *gin.Context) {
@@ -105,14 +105,14 @@ func RunContainerApi(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	exportSet := nat.Port(fmt.Sprintf("%d/tcp", json.HostPort))
-	hostPort := nat.Port(fmt.Sprintf("%d/tcp", json.HostPort))
+	exportSet := nat.Port(fmt.Sprintf("%d/tcp", json.ExportPort))
 	portSet := nat.PortSet{exportSet: struct{}{}}
+
 	portBindings := nat.PortMap{
-		hostPort: []nat.PortBinding{
+		exportSet: []nat.PortBinding{
 			{
-				HostIP:   strconv.Itoa(json.HostIP),
-				HostPort: strconv.Itoa(json.ExportPort),
+				HostIP:   json.HostIP,
+				HostPort: strconv.Itoa(json.HostPort),
 			},
 		},
 	}
