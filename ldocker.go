@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -8,8 +9,6 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
-	"io"
-	"os"
 )
 
 var (
@@ -67,12 +66,18 @@ func RemoveImage(imageNameTag string) (string, error) {
 }
 
 // Sample for image name: `stilliard/pure-ftpd:latest`
-func PullImage(imageName string) {
+func PullImage(imageName string) (string, error) {
 	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
+
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	io.Copy(os.Stdout, out)
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(out)
+	newStr := buf.String()
+
+	return newStr, nil
 }
 
 func StopContainer(containerName string) {
