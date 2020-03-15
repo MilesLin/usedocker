@@ -90,7 +90,7 @@ func StopContainer(containerName string) (string, error) {
 	var isFound = false
 	for _, container := range containers {
 		for _, name := range container.Names {
-			if name == containerName {
+			if name == ("/" + containerName) {
 				isFound = true
 				if err := cli.ContainerStop(ctx, container.ID, nil); err != nil {
 					return "", err
@@ -119,7 +119,7 @@ func RemoveContainer(containerName string) (string, error) {
 
 	for _, container := range containers {
 		for _, name := range container.Names {
-			if name == containerName {
+			if name == ("/" + containerName) {
 				isFound = true
 				fmt.Print("Removing container ", container.ID[:10], "... ")
 				if err := cli.ContainerRemove(ctx, container.ID, types.ContainerRemoveOptions{Force: true}); err != nil {

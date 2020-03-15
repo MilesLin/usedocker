@@ -23,5 +23,6 @@ func TestUpdateContainer(t *testing.T) {
 	RunContainer("mileslin/dockerlab:latest",
 		"golangrun",
 		portSet,
-		portBindings)
+		portBindings,
+		"always")
 }

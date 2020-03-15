@@ -129,4 +129,65 @@ func RunContainerApi(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{"msg": msg, "err": ""})
 	}
+
+}
+
+func UpdateRunningContainerApi(c *gin.Context) {
+	var err error
+	var msg string
+	var tempMsg string
+	var json ContainerConfig
+	if err = c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if tempMsg, err = StopContainer(json.ContainerName); err != nil {
+		msg += tempMsg
+		c.JSON(http.StatusOK, gin.H{"msg": msg, "err": err.Error()})
+		return
+	}
+
+	if tempMsg, err = RemoveContainer(json.ContainerName); err != nil {
+		msg += tempMsg
+		c.JSON(http.StatusOK, gin.H{"msg": msg, "err": err.Error()})
+		return
+	}
+
+	if tempMsg, err = RemoveImage(json.ImageNameTag); err != nil {
+		msg += tempMsg
+		c.JSON(http.StatusOK, gin.H{"msg": msg, "err": err.Error()})
+		return
+	}
+
+	if tempMsg, err = PullImage(json.ImageNameTag); err != nil {
+		msg += tempMsg
+		c.JSON(http.StatusOK, gin.H{"msg": msg, "err": err.Error()})
+		return
+	}
+
+	exportSet := nat.Port(fmt.Sprintf("%d/tcp", json.ExportPort))
+	portSet := nat.PortSet{exportSet: struct{}{}}
+
+	portBindings := nat.PortMap{
+		exportSet: []nat.PortBinding{
+			{
+				HostIP:   json.HostIP,
+				HostPort: strconv.Itoa(json.HostPort),
+			},
+		},
+	}
+
+	tempMsg, err = RunContainer(json.ImageNameTag,
+		json.ContainerName,
+		portSet,
+		portBindings,
+		json.RestartPolicy)
+
+	msg += tempMsg
+
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"msg": msg, "err": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"msg": msg, "err": ""})
+	}
 }
