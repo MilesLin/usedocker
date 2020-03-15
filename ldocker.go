@@ -154,17 +154,19 @@ func RunContainer(
 	imageName,
 	containerName string,
 	exposedPorts nat.PortSet,
-	portBindings nat.PortMap) (string, error) {
+	portBindings nat.PortMap,
+	restartPolicy string) (string, error) {
 
 	config := &container.Config{
 		Image:        imageName,
 		ExposedPorts: exposedPorts,
 	}
 	hostConfig := &container.HostConfig{
-		PortBindings:  portBindings,
-		RestartPolicy: container.RestartPolicy{Name: "always"},
+		PortBindings: portBindings,
 	}
-
+	if restartPolicy != "" {
+		hostConfig.RestartPolicy = container.RestartPolicy{Name: restartPolicy}
+	}
 	resp, err := cli.ContainerCreate(ctx, config, hostConfig, nil, containerName)
 	if err != nil {
 		return "", err

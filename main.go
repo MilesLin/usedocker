@@ -18,6 +18,8 @@ func main() {
 
 	// todo: api port
 
+	// todo: example test
+
 	r := gin.Default()
 
 	r.POST("/rmi", RemoveImageApi)

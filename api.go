@@ -22,6 +22,7 @@ type ContainerConfig struct {
 	ExportPort    int    `form:"exportPort" json:"exportPort" binding:"required"`
 	HostPort      int    `form:"hostPort" json:"hostPort" binding:"required"`
 	HostIP        string `form:"hostIP" json:"hostIP" binding:"required"`
+	RestartPolicy string `form:"restartPolicy" json:"restartPolicy"`
 }
 
 func RemoveImageApi(c *gin.Context) {
@@ -120,7 +121,8 @@ func RunContainerApi(c *gin.Context) {
 	msg, err = RunContainer(json.ImageNameTag,
 		json.ContainerName,
 		portSet,
-		portBindings)
+		portBindings,
+		json.RestartPolicy)
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"msg": msg, "err": err.Error()})
