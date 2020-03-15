@@ -107,12 +107,12 @@ func StopContainer(containerName string) (string, error) {
 
 }
 
-func RemoveContainer(containerName string) {
+func RemoveContainer(containerName string) (string, error) {
 
 	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{All: true})
 
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
 
 	var isFound = false
@@ -123,17 +123,18 @@ func RemoveContainer(containerName string) {
 				isFound = true
 				fmt.Print("Removing container ", container.ID[:10], "... ")
 				if err := cli.ContainerRemove(ctx, container.ID, types.ContainerRemoveOptions{Force: true}); err != nil {
-					fmt.Println(err)
+					return "", err
 				}
 			}
 		}
 	}
 
 	if isFound {
-		fmt.Println("Removed Container")
+		return "Removed container", nil
 	} else {
-		fmt.Println("Container not found")
+		return "", errors.New("container not found")
 	}
+
 }
 
 // Example of argument
@@ -153,7 +154,7 @@ func RunContainer(
 	imageName,
 	containerName string,
 	exposedPorts nat.PortSet,
-	portBindings nat.PortMap) {
+	portBindings nat.PortMap) (string, error) {
 
 	config := &container.Config{
 		Image:        imageName,
@@ -166,12 +167,12 @@ func RunContainer(
 
 	resp, err := cli.ContainerCreate(ctx, config, hostConfig, nil, containerName)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		panic(err)
+		return "", err
 	}
 
-	fmt.Printf("Container %s is running\n", containerName)
+	return fmt.Sprintf("Container %s is running\n", containerName), nil
 }
