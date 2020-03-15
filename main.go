@@ -7,17 +7,10 @@ import (
 
 func main() {
 	// todo: flags, SSL
-	// RestartPolicy
-	//   Empty string means not to restart
-	//   always Always restart
-	//   unless-stopped Restart always except when the user has manually stopped the container
-	//   on-failure Restart only when the container exit code is non-zero
-	// Authorization, port mapping, container name, imageName
 
+	// todo: Authorization
 	// todo: enable SSL
-
 	// todo: api port
-
 	// todo: example test
 
 	r := gin.Default()
