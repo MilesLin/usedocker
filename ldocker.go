@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -26,13 +27,15 @@ func init() {
 }
 
 // Sample for image name: `stilliard/pure-ftpd:latest`
-func RemoveImage(imageNameTag string) {
+func RemoveImage(imageNameTag string) (string, error) {
 	images, err := cli.ImageList(ctx, types.ImageListOptions{})
+
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	var isfound = false
+	var message = ""
 	for _, image := range images {
 		for _, tag := range image.RepoTags {
 			if tag == imageNameTag {
@@ -43,11 +46,11 @@ func RemoveImage(imageNameTag string) {
 				})
 
 				if err != nil {
-					fmt.Println(err)
+					return "", err
 				}
 
 				for _, re := range res {
-					fmt.Printf("Image %s deleted\n", re.Deleted)
+					message += fmt.Sprintf("Image %s deleted\n", re.Deleted)
 				}
 
 				break
@@ -56,7 +59,9 @@ func RemoveImage(imageNameTag string) {
 	}
 
 	if !isfound {
-		fmt.Printf("Image %s not found", imageNameTag)
+		return "", errors.New(fmt.Sprintf("Image %s not found", imageNameTag))
+	} else {
+		return message, nil
 	}
 
 }
