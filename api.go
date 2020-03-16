@@ -5,7 +5,6 @@ import (
 	"github.com/docker/go-connections/nat"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 type Image struct {
@@ -19,8 +18,8 @@ type Container struct {
 type ContainerConfig struct {
 	ImageNameTag  string `form:"imageNameTag" json:"imageNameTag" binding:"required"`
 	ContainerName string `form:"containerName" json:"containerName" binding:"required"`
-	ExportPort    int    `form:"exportPort" json:"exportPort" binding:"required"`
-	HostPort      int    `form:"hostPort" json:"hostPort" binding:"required"`
+	ExportPort    string `form:"exportPort" json:"exportPort" binding:"required"`
+	HostPort      string `form:"hostPort" json:"hostPort" binding:"required"`
 	HostIP        string `form:"hostIP" json:"hostIP" binding:"required"`
 	RestartPolicy string `form:"restartPolicy" json:"restartPolicy"`
 }
@@ -106,14 +105,14 @@ func RunContainerApi(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	exportSet := nat.Port(fmt.Sprintf("%d/tcp", json.ExportPort))
+	exportSet := nat.Port(fmt.Sprintf("%s/tcp", json.ExportPort))
 	portSet := nat.PortSet{exportSet: struct{}{}}
 
 	portBindings := nat.PortMap{
 		exportSet: []nat.PortBinding{
 			{
 				HostIP:   json.HostIP,
-				HostPort: strconv.Itoa(json.HostPort),
+				HostPort: json.HostPort,
 			},
 		},
 	}
@@ -165,14 +164,14 @@ func UpdateRunningContainerApi(c *gin.Context) {
 		return
 	}
 
-	exportSet := nat.Port(fmt.Sprintf("%d/tcp", json.ExportPort))
+	exportSet := nat.Port(fmt.Sprintf("%s/tcp", json.ExportPort))
 	portSet := nat.PortSet{exportSet: struct{}{}}
 
 	portBindings := nat.PortMap{
 		exportSet: []nat.PortBinding{
 			{
 				HostIP:   json.HostIP,
-				HostPort: strconv.Itoa(json.HostPort),
+				HostPort: json.HostPort,
 			},
 		},
 	}
