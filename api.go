@@ -25,6 +25,16 @@ type ContainerConfig struct {
 	Env           []string `form:"env" json:"env"`
 }
 
+// ShowAccount godoc
+// @Summary Show a account
+// @Description get string by ID
+// @ID get-string-by-int
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Account ID"
+// @Success 200 {object} main.Image
+// @Header 200 {string} Token "qwerty"
+// @Router /accounts/{id} [get]
 func RemoveImageApi(c *gin.Context) {
 
 	var err error
