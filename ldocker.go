@@ -11,22 +11,14 @@ import (
 	"github.com/docker/go-connections/nat"
 )
 
-var (
-	ctx context.Context
-	cli *client.Client
-)
-
-func init() {
-	var err error
-	ctx = context.Background()
-	cli, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-	if err != nil {
-		panic(err)
-	}
-}
-
 // Sample for image name: `stilliard/pure-ftpd:latest`
 func RemoveImage(imageNameTag string) (string, error) {
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return "", err
+	}
+
 	images, err := cli.ImageList(ctx, types.ImageListOptions{})
 
 	if err != nil {
@@ -67,6 +59,12 @@ func RemoveImage(imageNameTag string) (string, error) {
 
 // Sample for image name: `stilliard/pure-ftpd:latest`
 func PullImage(imageName string) (string, error) {
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return "", err
+	}
+
 	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
 
 	if err != nil {
@@ -81,6 +79,11 @@ func PullImage(imageName string) (string, error) {
 }
 
 func StopContainer(containerName string) (string, error) {
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return "", err
+	}
 
 	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
 
@@ -108,6 +111,11 @@ func StopContainer(containerName string) (string, error) {
 }
 
 func RemoveContainer(containerName string) (string, error) {
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return "", err
+	}
 
 	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{All: true})
 
@@ -157,6 +165,12 @@ func RunContainer(
 	portBindings nat.PortMap,
 	restartPolicy string) (string, error) {
 
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return "", err
+	}
+
 	config := &container.Config{
 		Image:        imageName,
 		ExposedPorts: exposedPorts,
@@ -166,12 +180,13 @@ func RunContainer(
 	}
 	// RestartPolicy
 	//   Empty string means not to restart
-	//   always Always restart
-	//   unless-stopped Restart always except when the user has manually stopped the container
-	//   on-failure Restart only when the container exit code is non-zero
+	//   always: Always restart
+	//   unless-stopped: Restart always except when the user has manually stopped the container
+	//   on-failure: Restart only when the container exit code is non-zero
 	if restartPolicy != "" {
 		hostConfig.RestartPolicy = container.RestartPolicy{Name: restartPolicy}
 	}
+
 	resp, err := cli.ContainerCreate(ctx, config, hostConfig, nil, containerName)
 	if err != nil {
 		return "", err

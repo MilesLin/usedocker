@@ -13,6 +13,8 @@ func main() {
 	var enableSSL = flag.Bool("enableSSL", false, "To enable SSL by adding -enableSSL flag")
 	var sslport = flag.String("sslport", "443", "The port of https. 443 is default value.")
 	var port = flag.String("port", "8080", "The port of http. 8080 is default value.")
+
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
 	var acct = flag.String("account", "", "The account for basic authorization usage.")
 	var pwd = flag.String("password", "", "The password for basic authorization usage.")
 
@@ -27,8 +29,8 @@ func main() {
 	}
 
 	r.POST("/rmi", RemoveImageApi)
-	r.POST("/pullimage", PullImageApi)
-	r.POST("/stopcontainer", StopContainerApi)
+	r.POST("/pull", PullImageApi)
+	r.POST("/stop", StopContainerApi)
 	r.POST("/rm", RemoveContainerApi)
 	r.POST("/run", RunContainerApi)
 
