@@ -16,12 +16,13 @@ type Container struct {
 }
 
 type ContainerConfig struct {
-	ImageNameTag  string `form:"imageNameTag" json:"imageNameTag" binding:"required"`
-	ContainerName string `form:"containerName" json:"containerName" binding:"required"`
-	ExportPort    string `form:"exportPort" json:"exportPort" binding:"required"`
-	HostPort      string `form:"hostPort" json:"hostPort" binding:"required"`
-	HostIP        string `form:"hostIP" json:"hostIP" binding:"required"`
-	RestartPolicy string `form:"restartPolicy" json:"restartPolicy"`
+	ImageNameTag  string   `form:"imageNameTag" json:"imageNameTag" binding:"required"`
+	ContainerName string   `form:"containerName" json:"containerName" binding:"required"`
+	ExportPort    string   `form:"exportPort" json:"exportPort" binding:"required"`
+	HostPort      string   `form:"hostPort" json:"hostPort" binding:"required"`
+	HostIP        string   `form:"hostIP" json:"hostIP" binding:"required"`
+	RestartPolicy string   `form:"restartPolicy" json:"restartPolicy"`
+	Env           []string `form:"env" json:"env"`
 }
 
 func RemoveImageApi(c *gin.Context) {
@@ -121,6 +122,7 @@ func RunContainerApi(c *gin.Context) {
 		json.ContainerName,
 		portSet,
 		portBindings,
+		json.Env,
 		json.RestartPolicy)
 
 	if err != nil {
@@ -180,6 +182,7 @@ func UpdateRunningContainerApi(c *gin.Context) {
 		json.ContainerName,
 		portSet,
 		portBindings,
+		json.Env,
 		json.RestartPolicy)
 
 	msg += tempMsg

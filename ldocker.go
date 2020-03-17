@@ -163,6 +163,7 @@ func RunContainer(
 	containerName string,
 	exposedPorts nat.PortSet,
 	portBindings nat.PortMap,
+	env []string,
 	restartPolicy string) (string, error) {
 
 	ctx := context.Background()
@@ -174,6 +175,7 @@ func RunContainer(
 	config := &container.Config{
 		Image:        imageName,
 		ExposedPorts: exposedPorts,
+		Env:          env,
 	}
 	hostConfig := &container.HostConfig{
 		PortBindings: portBindings,
@@ -188,6 +190,7 @@ func RunContainer(
 	}
 
 	resp, err := cli.ContainerCreate(ctx, config, hostConfig, nil, containerName)
+
 	if err != nil {
 		return "", err
 	}

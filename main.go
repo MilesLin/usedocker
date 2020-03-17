@@ -8,7 +8,6 @@ import (
 
 func main() {
 	// todo: example test
-	// todo: refactor
 	// todo: enable swagger https://github.com/swaggo/gin-swagger
 	var enableSSL = flag.Bool("enableSSL", false, "To enable SSL by adding -enableSSL flag")
 	var sslport = flag.String("sslport", "443", "The port of https. 443 is default value.")
@@ -24,7 +23,7 @@ func main() {
 
 	if *acct != "" && *pwd != "" {
 		r.Use(gin.BasicAuth(gin.Accounts{
-			*acct:*pwd,
+			*acct: *pwd,
 		}))
 	}
 

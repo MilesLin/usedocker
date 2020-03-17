@@ -6,8 +6,8 @@ import (
 )
 
 func TestUpdateContainer(t *testing.T) {
-	StopContainer("/golangrun")
-	RemoveContainer("/golangrun")
+	StopContainer("golangrun")
+	RemoveContainer("golangrun")
 	RemoveImage("mileslin/dockerlab:latest")
 	PullImage("mileslin/dockerlab:latest")
 
@@ -24,5 +24,6 @@ func TestUpdateContainer(t *testing.T) {
 		"golangrun",
 		portSet,
 		portBindings,
+		[]string{"abc=123", "xyz=999"},
 		"always")
 }
