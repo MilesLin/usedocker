@@ -11,6 +11,7 @@ import (
 	"log"
 )
 
+// @securityDefinitions.basic BasicAuth
 func main() {
 	// todo: document api
 	// todo: document readme

@@ -8,7 +8,7 @@ import (
 )
 
 type Image struct {
-	ImageNameTag string `form:"imageNameTag" json:"imageNameTag" binding:"required"`
+	ImageNameTag string `form:"imageNameTag" json:"imageNameTag" binding:"required" example:"mileslin/dockerlab:latest"`
 }
 
 type Container struct {
@@ -25,16 +25,13 @@ type ContainerConfig struct {
 	Env           []string `form:"env" json:"env"`
 }
 
-// ShowAccount godoc
-// @Summary Show a account
-// @Description get string by ID
-// @ID get-string-by-int
+// @Summary Remove an image
+// @Description Remove an image by image name
 // @Accept  json
 // @Produce  json
-// @Param id path int true "Account ID"
-// @Success 200 {object} main.Image
-// @Header 200 {string} Token "qwerty"
-// @Router /accounts/{id} [get]
+// @Param body body Image true "the body content"
+// @Success 200 {body} string "the sample of body is {\"msg\": \"message\", \"err\":\"message\"}"
+// @Router /rmi/ [post]
 func RemoveImageApi(c *gin.Context) {
 
 	var err error
