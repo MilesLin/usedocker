@@ -13,9 +13,6 @@ import (
 
 // @securityDefinitions.basic BasicAuth
 func main() {
-	// todo: document api
-	// todo: document readme
-	// https://github.com/swaggo/swag
 	var enableSSL = flag.Bool("enableSSL", false, "To enable SSL by adding -enableSSL flag")
 	var sslport = flag.String("sslport", "443", "The port of https. 443 is default value.")
 	var port = flag.String("port", "8080", "The port of http. 8080 is default value.")
@@ -48,7 +45,7 @@ func main() {
 	r.POST("/updaterunningcontainer", UpdateRunningContainerApi)
 	if *enableSSL {
 		go func() {
-			r.RunTLS(":"+*sslport, "./cert.pem", "./key.pem")
+			log.Fatal(r.RunTLS(":"+*sslport, "./cert.pem", "./key.pem"))
 		}()
 	}
 
