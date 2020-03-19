@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestUpdateContainer(t *testing.T) {
+func ExapmleUpdateContainer(t *testing.T) {
 	StopContainer("golangrun")
 	RemoveContainer("golangrun")
 	RemoveImage("mileslin/dockerlab:latest")
