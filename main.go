@@ -21,8 +21,8 @@ func main() {
 	var port = flag.String("port", "8080", "The port of http. 8080 is default value.")
 
 	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
-	var acct = flag.String("account", "", "The account for basic authorization usage.")
-	var pwd = flag.String("password", "", "The password for basic authorization usage.")
+	var acct = flag.String("acct", "", "The account for basic authorization usage.")
+	var pwd = flag.String("pwd", "", "The password for basic authorization usage.")
 	var swag = flag.Bool("swag", false, "To enable swagger by adding -swag flag. The swagger page is /swagger/index.html")
 
 	flag.Parse()

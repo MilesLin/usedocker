@@ -25,37 +25,187 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/accounts/{id}": {
-            "get": {
-                "description": "get string by ID",
+        "/pull": {
+            "post": {
+                "description": "Pull an image by image name",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Show a account",
-                "operationId": "get-string-by-int",
+                "summary": "Pull an image",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Account ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "the body content",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Image"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "the sample of body is {\\\"msg\\\": \\\"message\\\", \\\"err\\\":\\\"message\\\"}",
+                        "schema": {
+                            "type": "body"
+                        }
+                    }
+                }
+            }
+        },
+        "/rm": {
+            "post": {
+                "description": "Remove a container by container name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Remove a container",
+                "parameters": [
+                    {
+                        "description": "the body content",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Container"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the sample of body is {\\\"msg\\\": \\\"message\\\", \\\"err\\\":\\\"message\\\"}",
+                        "schema": {
+                            "type": "body"
+                        }
+                    }
+                }
+            }
+        },
+        "/rmi": {
+            "post": {
+                "description": "Remove an image by image name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Remove an image",
+                "parameters": [
+                    {
+                        "description": "the body content",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/main.Image"
-                        },
-                        "headers": {
-                            "Token": {
-                                "type": "string",
-                                "description": "qwerty"
-                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the sample of body is {\\\"msg\\\": \\\"message\\\", \\\"err\\\":\\\"message\\\"}",
+                        "schema": {
+                            "type": "body"
+                        }
+                    }
+                }
+            }
+        },
+        "/run": {
+            "post": {
+                "description": "It do create and start to run the container a container by container name.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Run a container",
+                "parameters": [
+                    {
+                        "description": "the body content",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.ContainerConfig"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the sample of body is {\\\"msg\\\": \\\"message\\\", \\\"err\\\":\\\"message\\\"}",
+                        "schema": {
+                            "type": "body"
+                        }
+                    }
+                }
+            }
+        },
+        "/stop": {
+            "post": {
+                "description": "Stop a container by container name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Stop a container",
+                "parameters": [
+                    {
+                        "description": "the body content",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Container"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the sample of body is {\\\"msg\\\": \\\"message\\\", \\\"err\\\":\\\"message\\\"}",
+                        "schema": {
+                            "type": "body"
+                        }
+                    }
+                }
+            }
+        },
+        "/updaterunningcontainer": {
+            "post": {
+                "description": "It do 1. stop container, 2. remove container 3. remove image 4. pull image 5. run container.  If one step failed, then it stop immediately.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update a running container",
+                "parameters": [
+                    {
+                        "description": "the body content",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.ContainerConfig"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the sample of body is {\\\"msg\\\": \\\"message\\\", \\\"err\\\":\\\"message\\\"}",
+                        "schema": {
+                            "type": "body"
                         }
                     }
                 }
@@ -63,6 +213,64 @@ var doc = `{
         }
     },
     "definitions": {
+        "main.Container": {
+            "type": "object",
+            "required": [
+                "containerName"
+            ],
+            "properties": {
+                "containerName": {
+                    "type": "string",
+                    "example": "dockerapp"
+                }
+            }
+        },
+        "main.ContainerConfig": {
+            "type": "object",
+            "required": [
+                "containerName",
+                "exportPort",
+                "hostIP",
+                "hostPort",
+                "imageNameTag"
+            ],
+            "properties": {
+                "containerName": {
+                    "type": "string",
+                    "example": "dockerapp"
+                },
+                "env": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "abc=123",
+                        "xyz=999"
+                    ]
+                },
+                "exportPort": {
+                    "type": "string",
+                    "example": "80"
+                },
+                "hostIP": {
+                    "type": "string",
+                    "example": "0.0.0.0"
+                },
+                "hostPort": {
+                    "type": "string",
+                    "example": "8080"
+                },
+                "imageNameTag": {
+                    "type": "string",
+                    "example": "mileslin/dockerlab:latest"
+                },
+                "restartPolicy": {
+                    "type": "string",
+                    "example": "always"
+                }
+            }
+        },
         "main.Image": {
             "type": "object",
             "required": [
@@ -70,9 +278,15 @@ var doc = `{
             ],
             "properties": {
                 "imageNameTag": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "mileslin/dockerlab:latest"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
         }
     }
 }`

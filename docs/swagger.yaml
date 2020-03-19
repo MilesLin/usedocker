@@ -1,7 +1,50 @@
 definitions:
+  main.Container:
+    properties:
+      containerName:
+        example: dockerapp
+        type: string
+    required:
+    - containerName
+    type: object
+  main.ContainerConfig:
+    properties:
+      containerName:
+        example: dockerapp
+        type: string
+      env:
+        example:
+        - abc=123
+        - xyz=999
+        items:
+          type: string
+        type: array
+      exportPort:
+        example: "80"
+        type: string
+      hostIP:
+        example: 0.0.0.0
+        type: string
+      hostPort:
+        example: "8080"
+        type: string
+      imageNameTag:
+        example: mileslin/dockerlab:latest
+        type: string
+      restartPolicy:
+        example: always
+        type: string
+    required:
+    - containerName
+    - exportPort
+    - hostIP
+    - hostPort
+    - imageNameTag
+    type: object
   main.Image:
     properties:
       imageNameTag:
+        example: mileslin/dockerlab:latest
         type: string
     required:
     - imageNameTag
@@ -10,28 +53,129 @@ info:
   contact: {}
   license: {}
 paths:
-  /accounts/{id}:
-    get:
+  /pull:
+    post:
       consumes:
       - application/json
-      description: get string by ID
-      operationId: get-string-by-int
+      description: Pull an image by image name
       parameters:
-      - description: Account ID
-        in: path
-        name: id
+      - description: the body content
+        in: body
+        name: body
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/main.Image'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
-          headers:
-            Token:
-              description: qwerty
-              type: string
+          description: 'the sample of body is {\"msg\": \"message\", \"err\":\"message\"}'
           schema:
-            $ref: '#/definitions/main.Image'
-      summary: Show a account
+            type: body
+      summary: Pull an image
+  /rm:
+    post:
+      consumes:
+      - application/json
+      description: Remove a container by container name
+      parameters:
+      - description: the body content
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Container'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'the sample of body is {\"msg\": \"message\", \"err\":\"message\"}'
+          schema:
+            type: body
+      summary: Remove a container
+  /rmi:
+    post:
+      consumes:
+      - application/json
+      description: Remove an image by image name
+      parameters:
+      - description: the body content
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Image'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'the sample of body is {\"msg\": \"message\", \"err\":\"message\"}'
+          schema:
+            type: body
+      summary: Remove an image
+  /run:
+    post:
+      consumes:
+      - application/json
+      description: It do create and start to run the container a container by container
+        name.
+      parameters:
+      - description: the body content
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.ContainerConfig'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'the sample of body is {\"msg\": \"message\", \"err\":\"message\"}'
+          schema:
+            type: body
+      summary: Run a container
+  /stop:
+    post:
+      consumes:
+      - application/json
+      description: Stop a container by container name
+      parameters:
+      - description: the body content
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Container'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'the sample of body is {\"msg\": \"message\", \"err\":\"message\"}'
+          schema:
+            type: body
+      summary: Stop a container
+  /updaterunningcontainer:
+    post:
+      consumes:
+      - application/json
+      description: It do 1. stop container, 2. remove container 3. remove image 4.
+        pull image 5. run container.  If one step failed, then it stop immediately.
+      parameters:
+      - description: the body content
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.ContainerConfig'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'the sample of body is {\"msg\": \"message\", \"err\":\"message\"}'
+          schema:
+            type: body
+      summary: Update a running container
+securityDefinitions:
+  BasicAuth:
+    type: basic
 swagger: "2.0"

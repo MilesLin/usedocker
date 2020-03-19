@@ -12,17 +12,17 @@ type Image struct {
 }
 
 type Container struct {
-	ContainerName string `form:"containerName" json:"containerName" binding:"required"`
+	ContainerName string `form:"containerName" json:"containerName" binding:"required" example:"dockerapp"`
 }
 
 type ContainerConfig struct {
-	ImageNameTag  string   `form:"imageNameTag" json:"imageNameTag" binding:"required"`
-	ContainerName string   `form:"containerName" json:"containerName" binding:"required"`
-	ExportPort    string   `form:"exportPort" json:"exportPort" binding:"required"`
-	HostPort      string   `form:"hostPort" json:"hostPort" binding:"required"`
-	HostIP        string   `form:"hostIP" json:"hostIP" binding:"required"`
-	RestartPolicy string   `form:"restartPolicy" json:"restartPolicy"`
-	Env           []string `form:"env" json:"env"`
+	ImageNameTag  string   `form:"imageNameTag" json:"imageNameTag" binding:"required" example:"mileslin/dockerlab:latest"`
+	ContainerName string   `form:"containerName" json:"containerName" binding:"required" example:"dockerapp"`
+	ExportPort    string   `form:"exportPort" json:"exportPort" binding:"required" example:"80"`
+	HostPort      string   `form:"hostPort" json:"hostPort" binding:"required" example:"8080"`
+	HostIP        string   `form:"hostIP" json:"hostIP" binding:"required" example:"0.0.0.0"`
+	RestartPolicy string   `form:"restartPolicy" json:"restartPolicy" example:"always"`
+	Env           []string `form:"env" json:"env" example:"abc=123,xyz=999"`
 }
 
 // @Summary Remove an image
@@ -31,7 +31,7 @@ type ContainerConfig struct {
 // @Produce  json
 // @Param body body Image true "the body content"
 // @Success 200 {body} string "the sample of body is {\"msg\": \"message\", \"err\":\"message\"}"
-// @Router /rmi/ [post]
+// @Router /rmi [post]
 func RemoveImageApi(c *gin.Context) {
 
 	var err error
@@ -50,6 +50,13 @@ func RemoveImageApi(c *gin.Context) {
 	}
 }
 
+// @Summary Pull an image
+// @Description Pull an image by image name
+// @Accept  json
+// @Produce  json
+// @Param body body Image true "the body content"
+// @Success 200 {body} string "the sample of body is {\"msg\": \"message\", \"err\":\"message\"}"
+// @Router /pull [post]
 func PullImageApi(c *gin.Context) {
 
 	var err error
@@ -68,6 +75,13 @@ func PullImageApi(c *gin.Context) {
 	}
 }
 
+// @Summary Stop a container
+// @Description Stop a container by container name
+// @Accept  json
+// @Produce  json
+// @Param body body Container true "the body content"
+// @Success 200 {body} string "the sample of body is {\"msg\": \"message\", \"err\":\"message\"}"
+// @Router /stop [post]
 func StopContainerApi(c *gin.Context) {
 
 	var err error
@@ -86,6 +100,13 @@ func StopContainerApi(c *gin.Context) {
 	}
 }
 
+// @Summary Remove a container
+// @Description Remove a container by container name
+// @Accept  json
+// @Produce  json
+// @Param body body Container true "the body content"
+// @Success 200 {body} string "the sample of body is {\"msg\": \"message\", \"err\":\"message\"}"
+// @Router /rm [post]
 func RemoveContainerApi(c *gin.Context) {
 
 	var err error
@@ -104,6 +125,13 @@ func RemoveContainerApi(c *gin.Context) {
 	}
 }
 
+// @Summary Run a container
+// @Description It do create and start to run the container a container by container name.
+// @Accept  json
+// @Produce  json
+// @Param body body ContainerConfig true "the body content"
+// @Success 200 {body} string "the sample of body is {\"msg\": \"message\", \"err\":\"message\"}"
+// @Router /run [post]
 func RunContainerApi(c *gin.Context) {
 
 	var err error
@@ -140,6 +168,13 @@ func RunContainerApi(c *gin.Context) {
 
 }
 
+// @Summary Update a running container
+// @Description It do 1. stop container, 2. remove container 3. remove image 4. pull image 5. run container.  If one step failed, then it stop immediately.
+// @Accept  json
+// @Produce  json
+// @Param body body ContainerConfig true "the body content"
+// @Success 200 {body} string "the sample of body is {\"msg\": \"message\", \"err\":\"message\"}"
+// @Router /updaterunningcontainer [post]
 func UpdateRunningContainerApi(c *gin.Context) {
 	var err error
 	var msg string
