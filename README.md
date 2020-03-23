@@ -7,7 +7,7 @@ You can use `go run . -h` to see the flags that can be used.
 
 `go run . -enableSSL`
 
-**To Enable basic authorization, please set the flag to acct and pwd**
+**To Enable web api basic authorization, please set the flags to acct and pwd**
 
 `go run . -acct=admin -pwd=123456`
  
