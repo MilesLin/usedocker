@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/docker/docker/api/types"
@@ -78,6 +80,36 @@ func PullImage(imageName string) (string, error) {
 	return newStr, nil
 }
 
+func PullImageWithAuth(imageName string) (string, error) {
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return "", err
+	}
+
+	authConfig := types.AuthConfig{
+		Username: *cr_acct,
+		Password: *cr_pwd,
+	}
+
+	encodedJSON, err := json.Marshal(authConfig)
+	if err != nil {
+		return "", err
+	}
+
+	authStr := base64.URLEncoding.EncodeToString(encodedJSON)
+
+	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{RegistryAuth: authStr})
+	if err != nil {
+		return "", err
+	}
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(out)
+	newStr := buf.String()
+
+	return newStr, nil
+}
 func StopContainer(containerName string) (string, error) {
 	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())

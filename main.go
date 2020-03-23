@@ -11,6 +11,11 @@ import (
 	"log"
 )
 
+var (
+	cr_acct *string //container registry username
+	cr_pwd  *string // container registry password
+)
+
 // @securityDefinitions.basic BasicAuth
 func main() {
 	var enableSSL = flag.Bool("enableSSL", false, "To enable SSL by adding -enableSSL flag")
@@ -18,9 +23,12 @@ func main() {
 	var port = flag.String("port", "8080", "The port of http. 8080 is default value.")
 
 	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
-	var acct = flag.String("acct", "", "The account for basic authorization usage.")
-	var pwd = flag.String("pwd", "", "The password for basic authorization usage.")
+	var acct = flag.String("acct", "", "The account for web api basic authorization usage.")
+	var pwd = flag.String("pwd", "", "The password for web api basic authorization usage.")
 	var swag = flag.Bool("swag", false, "To enable swagger by adding -swag flag. The swagger page is /swagger/index.html")
+
+	cr_acct = flag.String("cracct", "", "The password for private container registry.")
+	cr_pwd = flag.String("crpwd", "", "The username for private container registry.")
 
 	flag.Parse()
 
@@ -38,6 +46,7 @@ func main() {
 
 	r.POST("/rmi", RemoveImageApi)
 	r.POST("/pull", PullImageApi)
+	r.POST("/pullwithauth", PullImageWithAuthApi)
 	r.POST("/stop", StopContainerApi)
 	r.POST("/rm", RemoveContainerApi)
 	r.POST("/run", RunContainerApi)

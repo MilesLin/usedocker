@@ -27,14 +27,14 @@ var doc = `{
     "paths": {
         "/pull": {
             "post": {
-                "description": "Pull an image by image name",
+                "description": "Pull an image with authentication by image name. Your should set -cracct and -crpwd flag for username and password when running the console.",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Pull an image",
+                "summary": "Pull an image with authentication",
                 "parameters": [
                     {
                         "description": "the body content",
@@ -197,7 +197,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.ContainerConfig"
+                            "$ref": "#/definitions/main.ContainerConfigWithAuth"
                         }
                     }
                 ],
@@ -268,6 +268,55 @@ var doc = `{
                 "restartPolicy": {
                     "type": "string",
                     "example": "always"
+                }
+            }
+        },
+        "main.ContainerConfigWithAuth": {
+            "type": "object",
+            "required": [
+                "containerName",
+                "exportPort",
+                "hostIP",
+                "hostPort",
+                "imageNameTag"
+            ],
+            "properties": {
+                "containerName": {
+                    "type": "string",
+                    "example": "dockerapp"
+                },
+                "env": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "abc=123",
+                        "xyz=999"
+                    ]
+                },
+                "exportPort": {
+                    "type": "string",
+                    "example": "80"
+                },
+                "hostIP": {
+                    "type": "string",
+                    "example": "0.0.0.0"
+                },
+                "hostPort": {
+                    "type": "string",
+                    "example": "8080"
+                },
+                "imageNameTag": {
+                    "type": "string",
+                    "example": "mileslin/dockerlab:latest"
+                },
+                "restartPolicy": {
+                    "type": "string",
+                    "example": "always"
+                },
+                "withAuth": {
+                    "type": "boolean"
                 }
             }
         },

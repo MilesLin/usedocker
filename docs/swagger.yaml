@@ -41,6 +41,42 @@ definitions:
     - hostPort
     - imageNameTag
     type: object
+  main.ContainerConfigWithAuth:
+    properties:
+      containerName:
+        example: dockerapp
+        type: string
+      env:
+        example:
+        - abc=123
+        - xyz=999
+        items:
+          type: string
+        type: array
+      exportPort:
+        example: "80"
+        type: string
+      hostIP:
+        example: 0.0.0.0
+        type: string
+      hostPort:
+        example: "8080"
+        type: string
+      imageNameTag:
+        example: mileslin/dockerlab:latest
+        type: string
+      restartPolicy:
+        example: always
+        type: string
+      withAuth:
+        type: boolean
+    required:
+    - containerName
+    - exportPort
+    - hostIP
+    - hostPort
+    - imageNameTag
+    type: object
   main.Image:
     properties:
       imageNameTag:
@@ -57,7 +93,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Pull an image by image name
+      description: Pull an image with authentication by image name. Your should set
+        -cracct and -crpwd flag for username and password when running the console.
       parameters:
       - description: the body content
         in: body
@@ -72,7 +109,7 @@ paths:
           description: 'the sample of body is {\"msg\": \"message\", \"err\":\"message\"}'
           schema:
             type: body
-      summary: Pull an image
+      summary: Pull an image with authentication
   /rm:
     post:
       consumes:
@@ -166,7 +203,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/main.ContainerConfig'
+          $ref: '#/definitions/main.ContainerConfigWithAuth'
       produces:
       - application/json
       responses:
