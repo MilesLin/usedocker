@@ -265,7 +265,14 @@ var doc = `{
                     "type": "string",
                     "example": "mileslin/dockerlab:latest"
                 },
+                "mount": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Mount"
+                    }
+                },
                 "restartPolicy": {
+                    "description": "It supports ` + "`" + `no` + "`" + `, ` + "`" + `always` + "`" + `, ` + "`" + `on-failure` + "`" + `, ` + "`" + `unless-stopped` + "`" + `",
                     "type": "string",
                     "example": "always"
                 }
@@ -311,7 +318,14 @@ var doc = `{
                     "type": "string",
                     "example": "mileslin/dockerlab:latest"
                 },
+                "mount": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Mount"
+                    }
+                },
                 "restartPolicy": {
+                    "description": "It supports ` + "`" + `no` + "`" + `, ` + "`" + `always` + "`" + `, ` + "`" + `on-failure` + "`" + `, ` + "`" + `unless-stopped` + "`" + `",
                     "type": "string",
                     "example": "always"
                 },
@@ -329,6 +343,24 @@ var doc = `{
                 "imageNameTag": {
                     "type": "string",
                     "example": "mileslin/dockerlab:latest"
+                }
+            }
+        },
+        "main.Mount": {
+            "type": "object",
+            "properties": {
+                "source": {
+                    "type": "string",
+                    "example": "myvolume"
+                },
+                "target": {
+                    "type": "string",
+                    "example": "/app/appdata"
+                },
+                "type": {
+                    "description": "It supports ` + "`" + `bind` + "`" + `, ` + "`" + `volume` + "`" + `, ` + "`" + `tmpfs` + "`" + `, ` + "`" + `npipe` + "`" + `",
+                    "type": "string",
+                    "example": "volume"
                 }
             }
         }

@@ -31,7 +31,12 @@ definitions:
       imageNameTag:
         example: mileslin/dockerlab:latest
         type: string
+      mount:
+        items:
+          $ref: '#/definitions/main.Mount'
+        type: array
       restartPolicy:
+        description: It supports `no`, `always`, `on-failure`, `unless-stopped`
         example: always
         type: string
     required:
@@ -65,7 +70,12 @@ definitions:
       imageNameTag:
         example: mileslin/dockerlab:latest
         type: string
+      mount:
+        items:
+          $ref: '#/definitions/main.Mount'
+        type: array
       restartPolicy:
+        description: It supports `no`, `always`, `on-failure`, `unless-stopped`
         example: always
         type: string
       withAuth:
@@ -84,6 +94,19 @@ definitions:
         type: string
     required:
     - imageNameTag
+    type: object
+  main.Mount:
+    properties:
+      source:
+        example: myvolume
+        type: string
+      target:
+        example: /app/appdata
+        type: string
+      type:
+        description: It supports `bind`, `volume`, `tmpfs`, `npipe`
+        example: volume
+        type: string
     type: object
 info:
   contact: {}

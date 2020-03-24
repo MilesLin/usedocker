@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
-	"github.com/docker/docker/api/types/mount"
 )
 
 // Sample for image name: `stilliard/pure-ftpd:latest`
@@ -197,7 +197,8 @@ func RunContainer(
 	exposedPorts nat.PortSet,
 	portBindings nat.PortMap,
 	env []string,
-	restartPolicy string) (string, error) {
+	restartPolicy string,
+	bindVolume []Mount) (string, error) {
 
 	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
@@ -212,14 +213,18 @@ func RunContainer(
 	}
 	hostConfig := &container.HostConfig{
 		PortBindings: portBindings,
-		Mounts: []mount.Mount{
-                        {
-                                Type: mount.TypeVolume,
-                                Source: "appdata",
-                                Target: "/app/App_Data",
-                        },
-                },
 	}
+
+	if len(bindVolume) > 0 {
+		for _, m := range bindVolume {
+			hostConfig.Mounts = append(hostConfig.Mounts, mount.Mount{
+				Type:   mount.Type(m.Type),
+				Source: m.Source,
+				Target: m.Target,
+			})
+		}
+	}
+
 	// RestartPolicy
 	//   Empty string means not to restart
 	//   always: Always restart

@@ -21,13 +21,20 @@ type ContainerConfig struct {
 	ExportPort    string   `form:"exportPort" json:"exportPort" binding:"required" example:"80"`
 	HostPort      string   `form:"hostPort" json:"hostPort" binding:"required" example:"8080"`
 	HostIP        string   `form:"hostIP" json:"hostIP" binding:"required" example:"0.0.0.0"`
-	RestartPolicy string   `form:"restartPolicy" json:"restartPolicy" example:"always"`
+	RestartPolicy string   `form:"restartPolicy" json:"restartPolicy" example:"always"` // It supports `no`, `always`, `on-failure`, `unless-stopped`
 	Env           []string `form:"env" json:"env" example:"abc=123,xyz=999"`
+	Mount         []Mount  `form:"mount" json:"mount"`
 }
 
 type ContainerConfigWithAuth struct {
 	ContainerConfig
 	WithAuth bool `form:"withAuth" json:"withAuth" example:"true`
+}
+
+type Mount struct {
+	Type   string `form:"type" json:"type" example:"volume"` // It supports `bind`, `volume`, `tmpfs`, `npipe`
+	Source string `form:"source" json:"source" example:"myvolume"`
+	Target string `form:"target" json:"target" example:"/app/appdata"`
 }
 
 // @Summary Remove an image
@@ -188,7 +195,8 @@ func RunContainerApi(c *gin.Context) {
 		portSet,
 		portBindings,
 		json.Env,
-		json.RestartPolicy)
+		json.RestartPolicy,
+		json.Mount)
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"msg": msg, "err": err.Error()})
@@ -263,7 +271,8 @@ func UpdateRunningContainerApi(c *gin.Context) {
 		portSet,
 		portBindings,
 		json.Env,
-		json.RestartPolicy)
+		json.RestartPolicy,
+		json.Mount)
 
 	msg += tempMsg
 	if err != nil {
