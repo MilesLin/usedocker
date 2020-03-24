@@ -11,6 +11,7 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+	"github.com/docker/docker/api/types/mount"
 )
 
 // Sample for image name: `stilliard/pure-ftpd:latest`
@@ -211,6 +212,13 @@ func RunContainer(
 	}
 	hostConfig := &container.HostConfig{
 		PortBindings: portBindings,
+		Mounts: []mount.Mount{
+                        {
+                                Type: mount.TypeVolume,
+                                Source: "appdata",
+                                Target: "/app/App_Data",
+                        },
+                },
 	}
 	// RestartPolicy
 	//   Empty string means not to restart
